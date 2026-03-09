@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGNITE FITNESS CLUB — Unleash Your Strength</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050507;
+    --deep: #0a0a0f;
+    --card-bg: #0d0d14;
+    --red: #ff1a1a;
+    --red2: #ff4444;
+    --red-glow: rgba(255,26,26,0.4);
+    --blue: #00d4ff;
+    --blue2: #0099cc;
+    --blue-glow: rgba(0,212,255,0.3);
+    --metal: #2a2a3a;
+    --metal2: #1a1a28;
+    --text: #e8e8f0;
+    --muted: #888899;
+    --border: rgba(255,255,255,0.06);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--red);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1.5px solid rgba(255,26,26,0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body:has(a:hover) .cursor { width: 20px; height: 20px; background: var(--blue); }
+  body:has(a:hover) .cursor-ring { width: 60px; height: 60px; border-color: var(--blue); }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9997;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 20px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(5,5,7,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #fff 30%, var(--red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+  }
+  .logo span { color: var(--red); -webkit-text-fill-color: var(--red); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--red);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: none;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+    z-index: -1;
+  }
+  .nav-cta:hover { color: #fff; box-shadow: 0 0 30px var(--red-glow); }
+  .nav-cta:hover::before { transform: scaleX(1); }
+
+  /* HERO */
+  #hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,26,26,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 80% at 20% 80%, rgba(0,212,255,0.05) 0%, transparent 60%),
+      linear-gradient(180deg, #050507 0%, #0a0507 50%, #050507 100%);
+    z-index: 0;
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,26,26,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,26,26,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    z-index: 0;
+  }
+
+  /* 3D CANVAS */
+  #heroCanvas {
+    position: absolute;
+    top: 0; right: 0;
+    width: 55%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0.9;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 700px;
+    padding: 0 60px;
+    margin-right: auto;
+    margin-left: 8vw;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+  }
+  .hero-h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 9vw, 130px);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+    margin-bottom: 6px;
+  }
+  .hero-h1 .line1 { display: block; color: #fff; }
+  .hero-h1 .line2 {
+    display: block;
+    background: linear-gradient(90deg, var(--red) 0%, #ff6b6b 50%, var(--blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(255,26,26,0.5));
+  }
+  .hero-sub {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 440px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 600; }
+  .hero-btns {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .btn-primary {
+    padding: 16px 40px;
+    background: linear-gradient(135deg, var(--red) 0%, #cc0000 100%);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #fff2 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 40px var(--red-glow), 0 0 80px rgba(255,26,26,0.2);
+    transform: translateY(-2px);
+  }
+  .btn-primary:hover::after { opacity: 1; }
+  .btn-secondary {
+    padding: 16px 40px;
+    background: transparent;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-secondary:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 0 30px var(--blue-glow);
+    transform: translateY(-2px);
+  }
+  .btn-secondary svg { width: 16px; height: 16px; }
+
+  .hero-stats {
+    position: absolute;
+    bottom: 60px;
+    left: 8vw;
+    display: flex;
+    gap: 60px;
+    z-index: 10;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+  }
+  .stat { text-align: left; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #fff 0%, var(--red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    right: 60px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    z-index: 10;
+    animation: fadeIn 1s 1.5s both;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--red));
+    animation: scrollLine 2s infinite;
+  }
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* SCROLL ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* SECTION COMMONS */
+  section { position: relative; overflow: hidden; }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--red);
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 84px);
+    letter-spacing: 3px;
+    line-height: 0.95;
+    margin-bottom: 20px;
+  }
+  .section-sub {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 480px;
+  }
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  /* MARQUEE */
+  .marquee-section {
+    padding: 24px 0;
+    background: linear-gradient(90deg, transparent, rgba(255,26,26,0.06), transparent);
+    border-top: 1px solid rgba(255,26,26,0.12);
+    border-bottom: 1px solid rgba(255,26,26,0.12);
+    overflow: hidden;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 0;
+    animation: marquee 20s linear infinite;
+    width: max-content;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 40px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .marquee-item .dot {
+    width: 5px; height: 5px;
+    background: var(--red);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--red);
+    flex-shrink: 0;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* PROGRAMS SECTION */
+  #programs { padding: 120px 0; }
+  .programs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 70px;
+  }
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .program-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    group: true;
+  }
+  .program-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,26,26,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .program-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--red);
+    opacity: 0;
+    transition: opacity 0.4s;
+    box-shadow: 0 0 30px var(--red-glow), inset 0 0 30px rgba(255,26,26,0.04);
+  }
+  .program-card:hover {
+    transform: translateY(-10px);
+  }
+  .program-card:hover::before { opacity: 1; }
+  .program-card:hover::after { opacity: 1; }
+  .program-card:hover .prog-icon { color: var(--red); transform: scale(1.1) rotate(5deg); }
+  .prog-icon {
+    width: 56px; height: 56px;
+    margin-bottom: 30px;
+    color: var(--muted);
+    transition: all 0.4s;
+  }
+  .prog-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: rgba(255,255,255,0.03);
+    position: absolute;
+    top: 10px; right: 20px;
+    line-height: 1;
+    letter-spacing: 2px;
+    transition: color 0.4s;
+  }
+  .program-card:hover .prog-num { color: rgba(255,26,26,0.08); }
+  .prog-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+  .prog-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+  .prog-tag {
+    display: inline-block;
+    padding: 4px 14px;
+    border: 1px solid rgba(255,26,26,0.3);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .prog-arrow {
+    position: absolute;
+    bottom: 32px; right: 32px;
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: all 0.4s;
+  }
+  .program-card:hover .prog-arrow {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+    transform: rotate(45deg);
+  }
+
+  /* TRANSFORMATION SECTION */
+  #transformation {
+    padding: 120px 0;
+    background: linear-gradient(180deg, var(--black) 0%, var(--deep) 50%, var(--black) 100%);
+  }
+  .transform-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .slider-container {
+    position: relative;
+    height: 520px;
+    border-radius: 2px;
+    overflow: hidden;
+    user-select: none;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8), 0 0 0 1px var(--border);
+  }
+  .slider-before, .slider-after {
+    position: absolute;
+    inset: 0;
+  }
+  .slider-before {
+    background: linear-gradient(135deg, #1a0a0a 0%, #2a1010 50%, #1a0a0a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slider-after {
+    background: linear-gradient(135deg, #0a1a0a 0%, #102a10 50%, #0a1a0a 100%);
+    clip-path: inset(0 50% 0 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: clip-path 0.05s;
+  }
+  .slider-figure {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 90%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* SVG body figures */
+  .body-svg { width: 180px; height: auto; }
+
+  .slider-label {
+    position: absolute;
+    bottom: 24px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 4px;
+    padding: 6px 16px;
+    border-radius: 2px;
+  }
+  .label-before {
+    left: 24px;
+    background: rgba(255,26,26,0.15);
+    border: 1px solid rgba(255,26,26,0.3);
+    color: var(--red2);
+  }
+  .label-after {
+    right: 24px;
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--blue);
+  }
+  .slider-handle {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--red), var(--blue));
+    cursor: col-resize;
+    z-index: 10;
+    box-shadow: 0 0 20px rgba(255,26,26,0.5);
+  }
+  .slider-handle::before, .slider-handle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    top: 50%; margin-top: -22px;
+    background: linear-gradient(135deg, var(--red), var(--blue));
+    box-shadow: 0 0 20px rgba(255,26,26,0.5);
+  }
+  .slider-arrows {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 6px;
+    z-index: 11;
+    color: #fff;
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  .transform-content { padding: 20px 0; }
+  .transform-list { list-style: none; margin-top: 40px; }
+  .transform-list li {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .transform-list li .check {
+    width: 28px; height: 28px;
+    background: rgba(255,26,26,0.1);
+    border: 1px solid rgba(255,26,26,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--red);
+    font-size: 12px;
+  }
+
+  /* TRAINERS */
+  #trainers { padding: 120px 0; }
+  .trainers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 70px;
+  }
+  .trainer-card {
+    height: 460px;
+    perspective: 1000px;
+    cursor: none;
+  }
+  .trainer-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .trainer-card:hover .trainer-inner {
+    transform: rotateY(180deg);
+  }
+  .trainer-front, .trainer-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border: 1px solid var(--border);
+  }
+  .trainer-front {
+    overflow: hidden;
+    background: var(--card-bg);
+  }
+  .trainer-front-img {
+    width: 100%; height: 75%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .trainer-front-info {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .trainer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .trainer-role {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .trainer-back {
+    background: linear-gradient(135deg, #0d0d14 0%, #120818 100%);
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 32px;
+    border-color: rgba(255,26,26,0.2);
+    box-shadow: inset 0 0 60px rgba(255,26,26,0.05), 0 0 40px rgba(255,26,26,0.1);
+  }
+  .back-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, #fff 0%, var(--red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .back-role {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+  .back-bio {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+  .back-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  .bstat { text-align: center; }
+  .bstat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--red);
+  }
+  .bstat-label {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .book-btn {
+    padding: 12px 0;
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: none;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .book-btn:hover { background: var(--red); color: #fff; }
+
+  /* Trainer avatar SVGs */
+  .trainer-avatar-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .trainer-avatar-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--metal2) 0%, var(--black) 100%);
+  }
+
+  /* MEMBERSHIP */
+  #membership {
+    padding: 120px 0;
+    background: linear-gradient(180deg, var(--black) 0%, var(--deep) 100%);
+  }
+  .membership-header { text-align: center; margin-bottom: 70px; }
+  .membership-header .section-sub { margin: 0 auto; }
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .plan-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 44px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    cursor: none;
+  }
+  .plan-card.featured {
+    background: linear-gradient(135deg, #140808 0%, #200c0c 100%);
+    border-color: rgba(255,26,26,0.3);
+    box-shadow: 0 0 60px rgba(255,26,26,0.1);
+  }
+  .plan-card:hover {
+    border-color: var(--red);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(255,26,26,0.15), 0 0 0 1px rgba(255,26,26,0.2);
+  }
+  .plan-card.featured:hover {
+    box-shadow: 0 20px 80px rgba(255,26,26,0.25), 0 0 0 1px rgba(255,26,26,0.5);
+  }
+  .plan-glow {
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,26,26,0.08);
+    filter: blur(40px);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .plan-card:hover .plan-glow { opacity: 1; }
+  .plan-badge {
+    display: inline-block;
+    padding: 5px 16px;
+    background: var(--red);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .plan-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .plan-price {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 36px;
+  }
+  .price-cur {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--red);
+    margin-top: 8px;
+  }
+  .price-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 30%, var(--red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .price-period {
+    font-size: 11px;
+    color: var(--muted);
+    align-self: flex-end;
+    margin-bottom: 12px;
+  }
+  .plan-features { list-style: none; margin-bottom: 40px; }
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .plan-features li .feat-dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--red);
+    flex-shrink: 0;
+  }
+  .plan-features li.inactive .feat-dot { background: var(--metal); box-shadow: none; }
+  .plan-features li.inactive { opacity: 0.4; }
+  .plan-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .plan-btn-outline {
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--text);
+  }
+  .plan-btn-outline:hover { border-color: var(--red); color: var(--red); }
+  .plan-btn-filled {
+    background: linear-gradient(135deg, var(--red), #aa0000);
+    color: #fff;
+    border: 1px solid transparent;
+  }
+  .plan-btn-filled:hover { box-shadow: 0 0 30px var(--red-glow); filter: brightness(1.1); }
+
+  /* FOOTER */
+  footer {
+    padding: 80px 0 40px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #fff, var(--red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 16px;
+    text-decoration: none;
+  }
+  .footer-tagline {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .social-links { display: flex; gap: 12px; }
+  .social-link {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  .social-link:hover { border-color: var(--red); color: var(--red); box-shadow: 0 0 15px var(--red-glow); }
+  .footer-col h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 10px; }
+  .footer-col ul a {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-col ul a:hover { color: var(--red); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .footer-bottom-links { display: flex; gap: 24px; }
+  .footer-bottom-links a { color: var(--muted); text-decoration: none; }
+  .footer-bottom-links a:hover { color: var(--red); }
+
+  /* RED DIVIDER LINE */
+  .red-line {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg, var(--red), transparent);
+    margin-bottom: 40px;
+    box-shadow: 0 0 10px var(--red-glow);
+  }
+
+  /* GLOW ORBS */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .orb-red { background: rgba(255,26,26,0.12); }
+  .orb-blue { background: rgba(0,212,255,0.08); }
+
+  /* PARALLAX SECTIONS */
+  .parallax-section {
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* CTA SECTION */
+  #cta {
+    padding: 140px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 70% at 50% 50%, rgba(255,26,26,0.12), transparent),
+      linear-gradient(180deg, var(--black), var(--deep), var(--black));
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 8vw, 110px);
+    letter-spacing: 6px;
+    line-height: 0.9;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .cta-title span { 
+    display: block;
+    background: linear-gradient(135deg, #fff 0%, var(--red) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cta-title span.blue-line {
+    background: linear-gradient(135deg, var(--blue) 0%, #fff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* LOADING */
+  #loader {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    transition: opacity 0.8s, visibility 0.8s;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    letter-spacing: 10px;
+    background: linear-gradient(135deg, #fff, var(--red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 1s ease infinite alternate;
+  }
+  @keyframes pulse { from { filter: brightness(1); } to { filter: brightness(1.4); } }
+  .loader-bar-wrap {
+    width: 200px; height: 2px;
+    background: rgba(255,255,255,0.1);
+  }
+  .loader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--blue));
+    animation: loadBar 1.5s ease forwards;
+    box-shadow: 0 0 10px var(--red-glow);
+  }
+  @keyframes loadBar { from { width: 0; } to { width: 100%; } }
+
+  @media (max-width: 900px) {
+    .programs-grid { grid-template-columns: 1fr 1fr; }
+    .trainers-grid { grid-template-columns: 1fr 1fr; }
+    .plans-grid { grid-template-columns: 1fr; }
+    .transform-wrapper { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    nav { padding: 16px 24px; }
+    .container { padding: 0 24px; }
+    .hero-content { margin-left: 0; padding: 0 24px; }
+    .hero-stats { left: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">IGNITE</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">IGNITE<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#programs">Programs</a></li>
+    <li><a href="#trainers">Trainers</a></li>
+    <li><a href="#membership">Pricing</a></li>
+    <li><a href="#cta">Contact</a></li>
+  </ul>
+  <a href="#membership" class="nav-cta">Join Now</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <!-- 3D DUMBBELL CANVAS -->
+  <canvas id="heroCanvas"></canvas>
+
+  <div class="hero-content">
+    <div class="hero-tag">Elite Fitness Experience</div>
+    <h1 class="hero-h1">
+      <span class="line1">Unleash</span>
+      <span class="line2">Your Strength</span>
+    </h1>
+    <p class="hero-sub">
+      Train at <strong>Ignite Fitness Club</strong> with professional trainers, modern equipment, and an energetic fitness community that pushes you beyond your limits.
+    </p>
+    <div class="hero-btns">
+      <a href="#membership" class="btn-primary">Start Training</a>
+      <a href="#programs" class="btn-secondary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+        </svg>
+        View Programs
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">12K+</div>
+      <div class="stat-label">Active Members</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">48</div>
+      <div class="stat-label">Pro Trainers</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">95%</div>
+      <div class="stat-label">Success Rate</div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-item"><span class="dot"></span>Weight Training</div>
+    <div class="marquee-item"><span class="dot"></span>HIIT Cardio</div>
+    <div class="marquee-item"><span class="dot"></span>Personal Coaching</div>
+    <div class="marquee-item"><span class="dot"></span>Body Transformation</div>
+    <div class="marquee-item"><span class="dot"></span>Yoga & Flexibility</div>
+    <div class="marquee-item"><span class="dot"></span>CrossFit</div>
+    <div class="marquee-item"><span class="dot"></span>Nutrition Plans</div>
+    <div class="marquee-item"><span class="dot"></span>Recovery Zone</div>
+    <div class="marquee-item"><span class="dot"></span>Weight Training</div>
+    <div class="marquee-item"><span class="dot"></span>HIIT Cardio</div>
+    <div class="marquee-item"><span class="dot"></span>Personal Coaching</div>
+    <div class="marquee-item"><span class="dot"></span>Body Transformation</div>
+    <div class="marquee-item"><span class="dot"></span>Yoga & Flexibility</div>
+    <div class="marquee-item"><span class="dot"></span>CrossFit</div>
+    <div class="marquee-item"><span class="dot"></span>Nutrition Plans</div>
+    <div class="marquee-item"><span class="dot"></span>Recovery Zone</div>
+  </div>
+</div>
+
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="orb orb-red" style="width:500px;height:500px;top:-100px;left:-100px;opacity:0.6"></div>
+  <div class="container">
+    <div class="programs-header">
+      <div>
+        <div class="section-tag reveal">Training Programs</div>
+        <h2 class="section-title reveal reveal-delay-1">Elite<br><span style="background:linear-gradient(135deg,var(--red),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Programs</span></h2>
+      </div>
+      <p class="section-sub reveal reveal-delay-2">Meticulously designed programs engineered for maximum results, whether you're a beginner or an elite athlete.</p>
+    </div>
+    <div class="programs-grid">
+      <div class="program-card reveal reveal-delay-1">
+        <div class="prog-num">01</div>
+        <svg class="prog-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6.5 6.5h11M6.5 17.5h11M4 9.5h2M18 9.5h2M4 14.5h2M18 14.5h2M2 9.5v5M22 9.5v5"/>
+        </svg>
+        <div class="prog-title">Weight Training</div>
+        <p class="prog-desc">Build raw power and sculpt your physique with our advanced free weight and machine programs.</p>
+        <span class="prog-tag">Strength</span>
+        <div class="prog-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+      </div>
+      <div class="program-card reveal reveal-delay-2">
+        <div class="prog-num">02</div>
+        <svg class="prog-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        <div class="prog-title">Cardio Training</div>
+        <p class="prog-desc">Ignite your metabolism with high-intensity cardio sessions designed to torch fat and boost endurance.</p>
+        <span class="prog-tag">Endurance</span>
+        <div class="prog-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+      </div>
+      <div class="program-card reveal reveal-delay-3">
+        <div class="prog-num">03</div>
+        <svg class="prog-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="8" r="3"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+          <path d="M2 12h2M20 12h2M4 8l1.5 1.5M18 8l-1.5 1.5"/>
+        </svg>
+        <div class="prog-title">Personal Coaching</div>
+        <p class="prog-desc">One-on-one sessions with elite certified coaches who craft bespoke programs around your goals.</p>
+        <span class="prog-tag">Premium</span>
+        <div class="prog-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+      </div>
+      <div class="program-card reveal reveal-delay-4">
+        <div class="prog-num">04</div>
+        <svg class="prog-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2C8 2 4 5 4 9c0 6 8 13 8 13s8-7 8-13c0-4-4-7-8-7z"/>
+          <path d="M12 7v4l2 2"/>
+        </svg>
+        <div class="prog-title">Body Transformation</div>
+        <p class="prog-desc">Complete 90-day system combining training, nutrition, and recovery to reshape your body entirely.</p>
+        <span class="prog-tag">90 Days</span>
+        <div class="prog-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSFORMATION -->
+<section id="transformation">
+  <div class="orb orb-blue" style="width:600px;height:600px;bottom:-200px;right:-200px;opacity:0.5"></div>
+  <div class="container">
+    <div class="transform-wrapper">
+      <div class="slider-container" id="sliderContainer">
+        <div class="slider-before">
+          <div class="slider-figure">
+            <svg class="body-svg" viewBox="0 0 120 280" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bodyBefore" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#3a1a1a"/>
+                  <stop offset="100%" style="stop-color:#1a0808"/>
+                </linearGradient>
+              </defs>
+              <!-- Head -->
+              <ellipse cx="60" cy="28" rx="22" ry="26" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.3)" stroke-width="1"/>
+              <!-- Neck -->
+              <rect x="52" y="50" width="16" height="18" rx="4" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.2)" stroke-width="1"/>
+              <!-- Torso (rounder/softer) -->
+              <ellipse cx="60" cy="115" rx="36" ry="52" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.3)" stroke-width="1"/>
+              <!-- Shoulders -->
+              <ellipse cx="24" cy="80" rx="18" ry="14" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.2)" stroke-width="1"/>
+              <ellipse cx="96" cy="80" rx="18" ry="14" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.2)" stroke-width="1"/>
+              <!-- Arms -->
+              <ellipse cx="14" cy="115" rx="12" ry="40" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.2)" stroke-width="1"/>
+              <ellipse cx="106" cy="115" rx="12" ry="40" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.2)" stroke-width="1"/>
+              <!-- Forearms -->
+              <ellipse cx="8" cy="170" rx="9" ry="28" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.15)" stroke-width="1"/>
+              <ellipse cx="112" cy="170" rx="9" ry="28" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.15)" stroke-width="1"/>
+              <!-- Hips (wide) -->
+              <ellipse cx="60" cy="172" rx="40" ry="18" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.3)" stroke-width="1"/>
+              <!-- Legs -->
+              <ellipse cx="45" cy="220" rx="18" ry="44" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.2)" stroke-width="1"/>
+              <ellipse cx="75" cy="220" rx="18" ry="44" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.2)" stroke-width="1"/>
+              <!-- Calves -->
+              <ellipse cx="43" cy="268" rx="12" ry="12" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.15)" stroke-width="1"/>
+              <ellipse cx="77" cy="268" rx="12" ry="12" fill="url(#bodyBefore)" stroke="rgba(255,80,80,0.15)" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="slider-label label-before">BEFORE</div>
+        </div>
+        <div class="slider-after" id="sliderAfter">
+          <div class="slider-figure">
+            <svg class="body-svg" viewBox="0 0 120 280" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bodyAfter" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#0a1f0a"/>
+                  <stop offset="100%" style="stop-color:#051005"/>
+                </linearGradient>
+                <linearGradient id="muscle" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.2"/>
+                  <stop offset="100%" style="stop-color:#00ff88;stop-opacity:0.1"/>
+                </linearGradient>
+              </defs>
+              <!-- Head -->
+              <ellipse cx="60" cy="26" rx="18" ry="22" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+              <!-- Neck muscular -->
+              <rect x="54" y="46" width="12" height="16" rx="3" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+              <!-- Torso (V-shape, muscular) -->
+              <path d="M24 70 Q60 65 96 70 L88 168 Q60 178 32 168 Z" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+              <!-- Chest muscles -->
+              <ellipse cx="47" cy="92" rx="16" ry="14" fill="url(#muscle)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+              <ellipse cx="73" cy="92" rx="16" ry="14" fill="url(#muscle)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+              <!-- Abs -->
+              <rect x="50" y="112" width="8" height="10" rx="2" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <rect x="62" y="112" width="8" height="10" rx="2" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <rect x="50" y="126" width="8" height="10" rx="2" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <rect x="62" y="126" width="8" height="10" rx="2" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <rect x="50" y="140" width="8" height="10" rx="2" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <rect x="62" y="140" width="8" height="10" rx="2" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <!-- Wide shoulders -->
+              <ellipse cx="18" cy="76" rx="20" ry="16" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+              <ellipse cx="102" cy="76" rx="20" ry="16" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+              <!-- Muscular arms -->
+              <ellipse cx="10" cy="108" rx="11" ry="36" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+              <ellipse cx="110" cy="108" rx="11" ry="36" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+              <!-- Bicep definition -->
+              <ellipse cx="10" cy="100" rx="8" ry="14" fill="url(#muscle)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+              <ellipse cx="110" cy="100" rx="8" ry="14" fill="url(#muscle)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+              <!-- Forearms -->
+              <ellipse cx="6" cy="158" rx="8" ry="22" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+              <ellipse cx="114" cy="158" rx="8" ry="22" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+              <!-- Narrow hips -->
+              <ellipse cx="60" cy="170" rx="30" ry="12" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+              <!-- Quads -->
+              <ellipse cx="46" cy="215" rx="15" ry="44" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+              <ellipse cx="74" cy="215" rx="15" ry="44" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+              <!-- Quad definition -->
+              <ellipse cx="44" cy="205" rx="10" ry="22" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <ellipse cx="76" cy="205" rx="10" ry="22" fill="url(#muscle)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+              <!-- Calves -->
+              <ellipse cx="44" cy="266" rx="10" ry="13" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+              <ellipse cx="76" cy="266" rx="10" ry="13" fill="url(#bodyAfter)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="slider-label label-after">AFTER</div>
+        </div>
+        <div class="slider-handle" id="sliderHandle">
+          <div class="slider-arrows">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M15 18l-6-6 6-6"/></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="transform-content">
+        <div class="section-tag reveal">Real Results</div>
+        <h2 class="section-title reveal reveal-delay-1">Real<br><span style="background:linear-gradient(135deg,var(--red),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Transformations</span></h2>
+        <div class="red-line reveal reveal-delay-2"></div>
+        <p class="section-sub reveal reveal-delay-2" style="max-width:100%">Our proven system delivers measurable, lasting results. Drag the slider to see the incredible physical transformations our members achieve with our expert programs.</p>
+        <ul class="transform-list">
+          <li class="reveal reveal-delay-1">
+            <div class="check">✓</div>
+            Personalized nutrition & training roadmap from day one
+          </li>
+          <li class="reveal reveal-delay-2">
+            <div class="check">✓</div>
+            Weekly check-ins with certified performance coaches
+          </li>
+          <li class="reveal reveal-delay-3">
+            <div class="check">✓</div>
+            Advanced body composition tracking & analytics
+          </li>
+          <li class="reveal reveal-delay-4">
+            <div class="check">✓</div>
+            Guaranteed results or full refund within 90 days
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINERS -->
+<section id="trainers">
+  <div class="orb orb-red" style="width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.4"></div>
+  <div class="container">
+    <div style="text-align:center;margin-bottom:0">
+      <div class="section-tag reveal" style="justify-content:center">Meet The Team</div>
+      <h2 class="section-title reveal reveal-delay-1" style="text-align:center">Elite <span style="background:linear-gradient(135deg,var(--red),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Trainers</span></h2>
+      <p class="section-sub reveal reveal-delay-2" style="margin:0 auto;text-align:center">Hover to reveal trainer details. Certified world-class coaches who have transformed thousands of lives.</p>
+    </div>
+    <div class="trainers-grid">
+      <!-- Trainer 1 -->
+      <div class="trainer-card reveal reveal-delay-1">
+        <div class="trainer-inner">
+          <div class="trainer-front">
+            <div class="trainer-front-img">
+              <div class="trainer-avatar-wrap">
+                <div class="trainer-avatar-bg"></div>
+                <svg width="220" height="280" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="t1bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#1a0808;stop-opacity:1" />
+                      <stop offset="100%" style="stop-color:#0d0d14;stop-opacity:1" />
+                    </linearGradient>
+                    <linearGradient id="t1skin" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#c8845a"/>
+                      <stop offset="100%" style="stop-color:#a06040"/>
+                    </linearGradient>
+                    <radialGradient id="t1glow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" style="stop-color:#ff1a1a;stop-opacity:0.15"/>
+                      <stop offset="100%" style="stop-color:#ff1a1a;stop-opacity:0"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="220" height="280" fill="url(#t1bg)"/>
+                  <ellipse cx="110" cy="140" rx="90" ry="90" fill="url(#t1glow)"/>
+                  <!-- Body -->
+                  <rect x="70" y="160" width="80" height="130" rx="10" fill="#1a0808"/>
+                  <!-- Tank top -->
+                  <path d="M70 160 Q85 145 110 145 Q135 145 150 160 L150 230 Q110 240 70 230 Z" fill="#1f0000"/>
+                  <!-- IGNITE text on shirt -->
+                  <text x="110" y="195" text-anchor="middle" fill="rgba(255,26,26,0.8)" font-size="9" font-family="'Bebas Neue',sans-serif" letter-spacing="2">IGNITE</text>
+                  <!-- Arms -->
+                  <ellipse cx="58" cy="178" rx="13" ry="35" fill="url(#t1skin)"/>
+                  <ellipse cx="162" cy="178" rx="13" ry="35" fill="url(#t1skin)"/>
+                  <!-- Neck -->
+                  <rect x="100" y="130" width="20" height="25" rx="6" fill="url(#t1skin)"/>
+                  <!-- Head -->
+                  <ellipse cx="110" cy="108" rx="30" ry="34" fill="url(#t1skin)"/>
+                  <!-- Hair -->
+                  <ellipse cx="110" cy="80" rx="30" ry="20" fill="#1a0800"/>
+                  <rect x="80" y="80" width="60" height="18" fill="#1a0800"/>
+                  <!-- Eyes -->
+                  <ellipse cx="99" cy="108" rx="5" ry="4" fill="#fff"/>
+                  <ellipse cx="121" cy="108" rx="5" ry="4" fill="#fff"/>
+                  <ellipse cx="100" cy="109" rx="3" ry="3" fill="#1a0800"/>
+                  <ellipse cx="122" cy="109" rx="3" ry="3" fill="#1a0800"/>
+                  <!-- Eyebrows -->
+                  <rect x="93" y="101" width="12" height="2" rx="1" fill="#1a0800"/>
+                  <rect x="115" y="101" width="12" height="2" rx="1" fill="#1a0800"/>
+                  <!-- Nose -->
+                  <ellipse cx="110" cy="118" rx="3" ry="2" fill="#9a6040" opacity="0.5"/>
+                  <!-- Mouth -->
+                  <path d="M103 126 Q110 132 117 126" stroke="#9a6040" stroke-width="1.5" fill="none"/>
+                  <!-- Red accent line at top -->
+                  <rect x="0" y="0" width="220" height="3" fill="url(#t1skin)" opacity="0"/>
+                  <rect x="0" y="277" width="220" height="3" fill="#ff1a1a" opacity="0.6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trainer-front-info">
+              <div class="trainer-name">Marcus Reed</div>
+              <div class="trainer-role">Strength & Power Coach</div>
+            </div>
+          </div>
+          <div class="trainer-back">
+            <div class="back-name">Marcus Reed</div>
+            <div class="back-role">Strength & Power Coach</div>
+            <p class="back-bio">Former Olympic weightlifting competitor with 12 years of elite coaching. Specializes in explosive strength development and powerlifting methodology.</p>
+            <div class="back-stats">
+              <div class="bstat"><div class="bstat-num">12</div><div class="bstat-label">Yrs Exp</div></div>
+              <div class="bstat"><div class="bstat-num">340+</div><div class="bstat-label">Clients</div></div>
+              <div class="bstat"><div class="bstat-num">98%</div><div class="bstat-label">Success</div></div>
+            </div>
+            <div class="book-btn">Book Session →</div>
+          </div>
+        </div>
+      </div>
+      <!-- Trainer 2 -->
+      <div class="trainer-card reveal reveal-delay-2">
+        <div class="trainer-inner">
+          <div class="trainer-front">
+            <div class="trainer-front-img">
+              <div class="trainer-avatar-wrap">
+                <div class="trainer-avatar-bg" style="background:linear-gradient(180deg,#071220,var(--black))"></div>
+                <svg width="220" height="280" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="t2bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#071220"/>
+                      <stop offset="100%" style="stop-color:#0a0a1a"/>
+                    </linearGradient>
+                    <linearGradient id="t2skin" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#e8b898"/>
+                      <stop offset="100%" style="stop-color:#c89070"/>
+                    </linearGradient>
+                    <radialGradient id="t2glow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.12"/>
+                      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="220" height="280" fill="url(#t2bg)"/>
+                  <ellipse cx="110" cy="140" rx="90" ry="90" fill="url(#t2glow)"/>
+                  <rect x="70" y="160" width="80" height="130" rx="10" fill="#07121a"/>
+                  <path d="M70 160 Q85 145 110 145 Q135 145 150 160 L150 230 Q110 240 70 230 Z" fill="#071a20"/>
+                  <text x="110" y="195" text-anchor="middle" fill="rgba(0,212,255,0.8)" font-size="9" font-family="'Bebas Neue',sans-serif" letter-spacing="2">IGNITE</text>
+                  <ellipse cx="58" cy="175" rx="11" ry="32" fill="url(#t2skin)"/>
+                  <ellipse cx="162" cy="175" rx="11" ry="32" fill="url(#t2skin)"/>
+                  <rect x="102" y="130" width="16" height="22" rx="5" fill="url(#t2skin)"/>
+                  <ellipse cx="110" cy="108" rx="27" ry="30" fill="url(#t2skin)"/>
+                  <ellipse cx="110" cy="82" rx="27" ry="16" fill="#4a2200"/>
+                  <path d="M83 96 Q110 78 137 96" fill="#4a2200"/>
+                  <ellipse cx="100" cy="108" rx="4" ry="3.5" fill="#fff"/>
+                  <ellipse cx="120" cy="108" rx="4" ry="3.5" fill="#fff"/>
+                  <ellipse cx="101" cy="109" rx="2.5" ry="2.5" fill="#1a0a00"/>
+                  <ellipse cx="121" cy="109" rx="2.5" ry="2.5" fill="#1a0a00"/>
+                  <rect x="94" y="101" width="12" height="2" rx="1" fill="#4a2200"/>
+                  <rect x="114" y="101" width="12" height="2" rx="1" fill="#4a2200"/>
+                  <path d="M104 125 Q110 130 116 125" stroke="#c89070" stroke-width="1.5" fill="none"/>
+                  <rect x="0" y="277" width="220" height="3" fill="#00d4ff" opacity="0.5"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trainer-front-info">
+              <div class="trainer-name">Sofia Laurent</div>
+              <div class="trainer-role">HIIT & Cardio Specialist</div>
+            </div>
+          </div>
+          <div class="trainer-back">
+            <div class="back-name">Sofia Laurent</div>
+            <div class="back-role">HIIT & Cardio Specialist</div>
+            <p class="back-bio">Elite HIIT and metabolic conditioning expert with a background in competitive athletics. Transforms clients through precision-designed interval protocols.</p>
+            <div class="back-stats">
+              <div class="bstat"><div class="bstat-num">9</div><div class="bstat-label">Yrs Exp</div></div>
+              <div class="bstat"><div class="bstat-num">500+</div><div class="bstat-label">Clients</div></div>
+              <div class="bstat"><div class="bstat-num">96%</div><div class="bstat-label">Success</div></div>
+            </div>
+            <div class="book-btn">Book Session →</div>
+          </div>
+        </div>
+      </div>
+      <!-- Trainer 3 -->
+      <div class="trainer-card reveal reveal-delay-3">
+        <div class="trainer-inner">
+          <div class="trainer-front">
+            <div class="trainer-front-img">
+              <div class="trainer-avatar-wrap">
+                <div class="trainer-avatar-bg" style="background:linear-gradient(180deg,#0a0f0a,var(--black))"></div>
+                <svg width="220" height="280" viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="t3skin" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#8a5a3a"/>
+                      <stop offset="100%" style="stop-color:#6a3a20"/>
+                    </linearGradient>
+                    <radialGradient id="t3glow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" style="stop-color:#ff1a1a;stop-opacity:0.1"/>
+                      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0"/>
+                    </radialGradient>
+                  </defs>
+                  <rect width="220" height="280" fill="#0a0f0a"/>
+                  <ellipse cx="110" cy="140" rx="90" ry="90" fill="url(#t3glow)"/>
+                  <rect x="70" y="160" width="80" height="130" rx="10" fill="#0f1a0f"/>
+                  <path d="M70 160 Q85 145 110 145 Q135 145 150 160 L150 230 Q110 240 70 230 Z" fill="#0a1a0a"/>
+                  <text x="110" y="195" text-anchor="middle" fill="rgba(255,26,26,0.6)" font-size="9" font-family="'Bebas Neue',sans-serif" letter-spacing="2">IGNITE</text>
+                  <ellipse cx="56" cy="172" rx="14" ry="36" fill="url(#t3skin)"/>
+                  <ellipse cx="164" cy="172" rx="14" ry="36" fill="url(#t3skin)"/>
+                  <ellipse cx="58" cy="155" rx="10" ry="16" fill="#5a3818" opacity="0.5"/>
+                  <ellipse cx="162" cy="155" rx="10" ry="16" fill="#5a3818" opacity="0.5"/>
+                  <rect x="101" y="130" width="18" height="24" rx="6" fill="url(#t3skin)"/>
+                  <ellipse cx="110" cy="106" rx="32" ry="35" fill="url(#t3skin)"/>
+                  <ellipse cx="110" cy="76" rx="32" ry="18" fill="#1a0800"/>
+                  <path d="M78 93 Q110 75 142 93" fill="#1a0800"/>
+                  <ellipse cx="98" cy="108" rx="5" ry="4" fill="#fff"/>
+                  <ellipse cx="122" cy="108" rx="5" ry="4" fill="#fff"/>
+                  <ellipse cx="99" cy="109" rx="3" ry="3" fill="#0d0800"/>
+                  <ellipse cx="123" cy="109" rx="3" ry="3" fill="#0d0800"/>
+                  <rect x="91" y="100" width="14" height="2.5" rx="1" fill="#1a0800"/>
+                  <rect x="115" y="100" width="14" height="2.5" rx="1" fill="#1a0800"/>
+                  <path d="M102 124 Q110 131 118 124" stroke="#8a5a3a" stroke-width="2" fill="none"/>
+                  <!-- Beard -->
+                  <path d="M90 120 Q110 135 130 120 L130 128 Q110 140 90 128 Z" fill="#1a0800" opacity="0.7"/>
+                  <rect x="0" y="277" width="220" height="3" fill="#ff1a1a" opacity="0.4"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trainer-front-info">
+              <div class="trainer-name">Kai Torres</div>
+              <div class="trainer-role">Body Transformation Expert</div>
+            </div>
+          </div>
+          <div class="trainer-back">
+            <div class="back-name">Kai Torres</div>
+            <div class="back-role">Body Transformation Expert</div>
+            <p class="back-bio">Renowned physique transformation coach with expertise in body recomposition. Has guided 600+ clients through complete physical and mental metamorphosis.</p>
+            <div class="back-stats">
+              <div class="bstat"><div class="bstat-num">15</div><div class="bstat-label">Yrs Exp</div></div>
+              <div class="bstat"><div class="bstat-num">600+</div><div class="bstat-label">Clients</div></div>
+              <div class="bstat"><div class="bstat-num">99%</div><div class="bstat-label">Success</div></div>
+            </div>
+            <div class="book-btn">Book Session →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBERSHIP -->
+<section id="membership">
+  <div class="container">
+    <div class="membership-header">
+      <div class="section-tag reveal" style="justify-content:center">Pricing Plans</div>
+      <h2 class="section-title reveal reveal-delay-1">Choose Your <span style="background:linear-gradient(135deg,var(--red),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Power</span></h2>
+      <p class="section-sub reveal reveal-delay-2">No contracts. Cancel anytime. Every plan includes full gym access and our app.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card reveal reveal-delay-1">
+        <div class="plan-glow"></div>
+        <div class="plan-name">Spark</div>
+        <p class="plan-desc">Perfect for those starting their fitness journey.</p>
+        <div class="plan-price">
+          <span class="price-cur">$</span>
+          <span class="price-num">29</span>
+          <span class="price-period">/month</span>
+        </div>
+        <ul class="plan-features">
+          <li><span class="feat-dot"></span>Full gym access</li>
+          <li><span class="feat-dot"></span>Basic app features</li>
+          <li><span class="feat-dot"></span>Group classes (3/week)</li>
+          <li><span class="feat-dot"></span>Locker room access</li>
+          <li class="inactive"><span class="feat-dot"></span>Personal training</li>
+          <li class="inactive"><span class="feat-dot"></span>Nutrition plan</li>
+        </ul>
+        <a href="#" class="plan-btn plan-btn-outline">Get Started</a>
+      </div>
+      <div class="plan-card featured reveal reveal-delay-2">
+        <div class="plan-glow"></div>
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Ignite</div>
+        <p class="plan-desc">The complete performance system for serious athletes.</p>
+        <div class="plan-price">
+          <span class="price-cur">$</span>
+          <span class="price-num">79</span>
+          <span class="price-period">/month</span>
+        </div>
+        <ul class="plan-features">
+          <li><span class="feat-dot"></span>Unlimited gym access</li>
+          <li><span class="feat-dot"></span>Full app + analytics</li>
+          <li><span class="feat-dot"></span>Unlimited group classes</li>
+          <li><span class="feat-dot"></span>2x personal sessions/month</li>
+          <li><span class="feat-dot"></span>Custom nutrition plan</li>
+          <li><span class="feat-dot"></span>Body composition scans</li>
+        </ul>
+        <a href="#" class="plan-btn plan-btn-filled">Start Igniting</a>
+      </div>
+      <div class="plan-card reveal reveal-delay-3">
+        <div class="plan-glow"></div>
+        <div class="plan-name">Elite</div>
+        <p class="plan-desc">VIP concierge-level fitness with zero compromises.</p>
+        <div class="plan-price">
+          <span class="price-cur">$</span>
+          <span class="price-num">149</span>
+          <span class="price-period">/month</span>
+        </div>
+        <ul class="plan-features">
+          <li><span class="feat-dot"></span>24/7 priority access</li>
+          <li><span class="feat-dot"></span>Full premium app suite</li>
+          <li><span class="feat-dot"></span>All group classes + VIP</li>
+          <li><span class="feat-dot"></span>8x personal sessions/month</li>
+          <li><span class="feat-dot"></span>Full nutrition coaching</li>
+          <li><span class="feat-dot"></span>Recovery & spa access</li>
+        </ul>
+        <a href="#" class="plan-btn plan-btn-outline">Go Elite</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="section-tag reveal" style="justify-content:center">Start Today</div>
+    <div class="cta-title reveal reveal-delay-1">
+      <span>YOUR BEST</span>
+      <span class="blue-line">BODY AWAITS</span>
+    </div>
+    <p class="section-sub reveal reveal-delay-2" style="margin:0 auto 48px;text-align:center">Join thousands of members who transformed their lives at Ignite Fitness Club. First 7 days are completely free.</p>
+    <div class="hero-btns reveal reveal-delay-3" style="justify-content:center">
+      <a href="#membership" class="btn-primary">Claim Free Trial</a>
+      <a href="tel:+1234567890" class="btn-secondary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Call Us Now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <a href="#" class="footer-logo">IGNITE</a>
+        <p class="footer-tagline">Forging champions since 2010. The premier destination for serious athletes and dedicated fitness enthusiasts across the globe.</p>
+        <div class="social-links">
+          <a href="#" class="social-link">𝕏</a>
+          <a href="#" class="social-link">in</a>
+          <a href="#" class="social-link">▶</a>
+          <a href="#" class="social-link">◉</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Programs</h4>
+        <ul>
+          <li><a href="#">Weight Training</a></li>
+          <li><a href="#">Cardio & HIIT</a></li>
+          <li><a href="#">Personal Coaching</a></li>
+          <li><a href="#">Body Transformation</a></li>
+          <li><a href="#">Group Classes</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About Ignite</a></li>
+          <li><a href="#">Our Trainers</a></li>
+          <li><a href="#">Success Stories</a></li>
+          <li><a href="#">Press & Media</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Visit Us</h4>
+        <ul>
+          <li><a href="#">Manhattan, NY</a></li>
+          <li><a href="#">Los Angeles, CA</a></li>
+          <li><a href="#">Miami, FL</a></li>
+          <li><a href="#">Chicago, IL</a></li>
+          <li><a href="#">Find Location</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ignite Fitness Club. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===================== LOADER =====================
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 1800);
+});
+
+// ===================== CURSOR =====================
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mx = 0, my = 0, cx = 0, cy = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+function animateRing() {
+  cx += (mx - cx) * 0.12;
+  cy += (my - cy) * 0.12;
+  cursorRing.style.left = cx + 'px';
+  cursorRing.style.top = cy + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// ===================== NAV =====================
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ===================== SCROLL REVEAL =====================
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ===================== TRANSFORMATION SLIDER =====================
+const sliderContainer = document.getElementById('sliderContainer');
+const sliderHandle = document.getElementById('sliderHandle');
+const sliderAfter = document.getElementById('sliderAfter');
+let isDragging = false;
+
+function updateSlider(x) {
+  const rect = sliderContainer.getBoundingClientRect();
+  let pct = (x - rect.left) / rect.width;
+  pct = Math.max(0.05, Math.min(0.95, pct));
+  const pctRight = 1 - pct;
+  sliderHandle.style.left = (pct * 100) + '%';
+  sliderAfter.style.clipPath = `inset(0 ${(pctRight * 100)}% 0 0)`;
+}
+
+sliderHandle.addEventListener('mousedown', e => { isDragging = true; e.preventDefault(); });
+document.addEventListener('mousemove', e => { if (isDragging) updateSlider(e.clientX); });
+document.addEventListener('mouseup', () => { isDragging = false; });
+sliderContainer.addEventListener('click', e => updateSlider(e.clientX));
+
+// Touch support
+sliderHandle.addEventListener('touchstart', e => { isDragging = true; });
+document.addEventListener('touchmove', e => {
+  if (isDragging) { updateSlider(e.touches[0].clientX); }
+});
+document.addEventListener('touchend', () => { isDragging = false; });
+
+// Init at 50%
+updateSlider(sliderContainer.getBoundingClientRect().left + sliderContainer.getBoundingClientRect().width / 2);
+
+// ===================== 3D DUMBBELL (WebGL) =====================
+const canvas = document.getElementById('heroCanvas');
+const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+  if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+if (gl) {
+  // Vertex shader
+  const vsSource = `
+    attribute vec3 aPosition;
+    attribute vec3 aNormal;
+    uniform mat4 uProjection;
+    uniform mat4 uModel;
+    uniform mat4 uView;
+    varying vec3 vNormal;
+    varying vec3 vPos;
+    void main() {
+      vec4 worldPos = uModel * vec4(aPosition, 1.0);
+      vPos = worldPos.xyz;
+      vNormal = mat3(uModel) * aNormal;
+      gl_Position = uProjection * uView * worldPos;
+    }
+  `;
+
+  const fsSource = `
+    precision mediump float;
+    varying vec3 vNormal;
+    varying vec3 vPos;
+    uniform vec3 uLightPos;
+    uniform vec3 uCamPos;
+    void main() {
+      vec3 N = normalize(vNormal);
+      vec3 L = normalize(uLightPos - vPos);
+      vec3 V = normalize(uCamPos - vPos);
+      vec3 H = normalize(L + V);
+      float diff = max(dot(N, L), 0.0);
+      float spec = pow(max(dot(N, H), 0.0), 64.0);
+      vec3 baseColor = vec3(0.15, 0.15, 0.18);
+      vec3 redAccent = vec3(1.0, 0.1, 0.1);
+      vec3 ambient = vec3(0.05, 0.05, 0.06);
+      vec3 color = ambient + baseColor * diff * 0.7 + redAccent * spec * 0.6;
+      // Edge glow
+      float rim = 1.0 - max(dot(N, V), 0.0);
+      color += vec3(1.0, 0.1, 0.1) * pow(rim, 3.0) * 0.5;
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  function createShader(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, createShader(gl.VERTEX_SHADER, vsSource));
+  gl.attachShader(prog, createShader(gl.FRAGMENT_SHADER, fsSource));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  // Build dumbbell geometry
+  function cylinder(radiusTop, radiusBottom, height, radialSegs, posY) {
+    const verts = [], norms = [], inds = [];
+    const base = verts.length / 3;
+    for (let i = 0; i <= radialSegs; i++) {
+      const theta = (i / radialSegs) * Math.PI * 2;
+      const cos = Math.cos(theta), sin = Math.sin(theta);
+      // Bottom
+      verts.push(cos * radiusBottom, posY, sin * radiusBottom);
+      const nb = [cos, 0, sin];
+      norms.push(...nb);
+      // Top
+      verts.push(cos * radiusTop, posY + height, sin * radiusTop);
+      norms.push(...nb);
+    }
+    for (let i = 0; i < radialSegs; i++) {
+      const b0 = base + i * 2, t0 = b0 + 1, b1 = b0 + 2, t1 = b0 + 3;
+      inds.push(b0, t0, b1, b1, t0, t1);
+    }
+    // Caps
+    const cy = [posY, posY + height];
+    const rads = [radiusBottom, radiusTop];
+    const nDir = [-1, 1];
+    cy.forEach((y, ci) => {
+      const center = verts.length / 3;
+      verts.push(0, y, 0);
+      norms.push(0, nDir[ci], 0);
+      for (let i = 0; i <= radialSegs; i++) {
+        const theta = (i / radialSegs) * Math.PI * 2;
+        verts.push(Math.cos(theta) * rads[ci], y, Math.sin(theta) * rads[ci]);
+        norms.push(0, nDir[ci], 0);
+      }
+      for (let i = 0; i < radialSegs; i++) {
+        if (ci === 0) inds.push(center, center + i + 2, center + i + 1);
+        else inds.push(center, center + i + 1, center + i + 2);
+      }
+    });
+    return { verts, norms, inds };
+  }
+
+  function combine(parts) {
+    const V = [], N = [], I = [];
+    let offset = 0;
+    for (const p of parts) {
+      V.push(...p.verts); N.push(...p.norms);
+      I.push(...p.inds.map(x => x + offset));
+      offset += p.verts.length / 3;
+    }
+    return { V, N, I };
+  }
+
+  const dumbbell = combine([
+    cylinder(0.12, 0.12, 2.4, 24, -1.2),   // handle
+    cylinder(0.38, 0.38, 0.28, 24, 1.2),   // right plate outer
+    cylinder(0.32, 0.32, 0.22, 24, 0.92),  // right plate inner
+    cylinder(0.12, 0.12, 0.22, 24, 0.7),   // spacer r
+    cylinder(0.38, 0.38, 0.28, 24, -1.48), // left plate outer
+    cylinder(0.32, 0.32, 0.22, 24, -1.34), // left plate inner
+    cylinder(0.12, 0.12, 0.22, 24, -1.12), // spacer l
+  ]);
+
+  const posBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dumbbell.V), gl.STATIC_DRAW);
+
+  const normBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normBuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dumbbell.N), gl.STATIC_DRAW);
+
+  const idxBuf = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(dumbbell.I), gl.STATIC_DRAW);
+
+  const aPos = gl.getAttribLocation(prog, 'aPosition');
+  const aNorm = gl.getAttribLocation(prog, 'aNormal');
+  const uProj = gl.getUniformLocation(prog, 'uProjection');
+  const uModel = gl.getUniformLocation(prog, 'uModel');
+  const uView = gl.getUniformLocation(prog, 'uView');
+  const uLight = gl.getUniformLocation(prog, 'uLightPos');
+  const uCam = gl.getUniformLocation(prog, 'uCamPos');
+
+  function mat4() { return new Float32Array(16); }
+  function identity(m) { for(let i=0;i<16;i++) m[i]=i%5===0?1:0; return m; }
+  function perspective(fov, aspect, near, far) {
+    const m = mat4(), f = 1 / Math.tan(fov / 2);
+    m[0]=f/aspect; m[5]=f;
+    m[10]=(far+near)/(near-far); m[11]=-1;
+    m[14]=2*far*near/(near-far);
+    return m;
+  }
+  function lookAt(eye, center, up) {
+    const m = mat4();
+    const z = normalize(sub(eye, center));
+    const x = normalize(cross(up, z));
+    const y = cross(z, x);
+    m[0]=x[0]; m[4]=x[1]; m[8]=x[2]; m[12]=-dot(x,eye);
+    m[1]=y[0]; m[5]=y[1]; m[9]=y[2]; m[13]=-dot(y,eye);
+    m[2]=z[0]; m[6]=z[1]; m[10]=z[2]; m[14]=-dot(z,eye);
+    m[15]=1;
+    return m;
+  }
+  function mul(a, b) {
+    const m = mat4();
+    for(let i=0;i<4;i++) for(let j=0;j<4;j++) {
+      let s=0; for(let k=0;k<4;k++) s+=a[i+k*4]*b[k+j*4];
+      m[i+j*4]=s;
+    }
+    return m;
+  }
+  function rotX(a) { const m=identity(mat4()); m[5]=Math.cos(a); m[6]=Math.sin(a); m[9]=-Math.sin(a); m[10]=Math.cos(a); return m; }
+  function rotY(a) { const m=identity(mat4()); m[0]=Math.cos(a); m[2]=-Math.sin(a); m[8]=Math.sin(a); m[10]=Math.cos(a); return m; }
+  function rotZ(a) { const m=identity(mat4()); m[0]=Math.cos(a); m[1]=Math.sin(a); m[4]=-Math.sin(a); m[5]=Math.cos(a); return m; }
+  function sub(a,b){return[a[0]-b[0],a[1]-b[1],a[2]-b[2]];}
+  function cross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+  function normalize(v){const l=Math.sqrt(dot(v,v));return l?[v[0]/l,v[1]/l,v[2]/l]:[0,0,0];}
+
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let scrollY = 0;
+  window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.enable(gl.CULL_FACE);
+
+  let t = 0;
+  function render() {
+    requestAnimationFrame(render);
+    t += 0.008;
+
+    const h = canvas.height, w = canvas.width;
+    gl.viewport(0, 0, w, h);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    const proj = perspective(Math.PI / 5, w / h, 0.1, 100);
+    const camPos = [0, 0, 8];
+    const view = lookAt(camPos, [0,0,0], [0,1,0]);
+
+    // Auto rotation + mouse influence
+    const ry = t + mouseX * 0.6;
+    const rx = Math.sin(t * 0.4) * 0.3 + mouseY * -0.3;
+    const rz = Math.PI / 5;
+
+    // Scale down on scroll
+    const scrollFade = Math.max(0, 1 - scrollY / (window.innerHeight * 0.7));
+    const sc = 1.4 * scrollFade;
+
+    let model = identity(mat4());
+    const scaleM = identity(mat4());
+    scaleM[0] = sc; scaleM[5] = sc; scaleM[10] = sc;
+    model = mul(scaleM, mul(rotX(rx), mul(rotY(ry), rotZ(rz))));
+
+    gl.uniformMatrix4fv(uProj, false, proj);
+    gl.uniformMatrix4fv(uModel, false, model);
+    gl.uniformMatrix4fv(uView, false, view);
+    gl.uniform3fv(uLight, [5, 5, 5]);
+    gl.uniform3fv(uCam, camPos);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, normBuf);
+    gl.enableVertexAttribArray(aNorm);
+    gl.vertexAttribPointer(aNorm, 3, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf);
+    gl.drawElements(gl.TRIANGLES, dumbbell.I.length, gl.UNSIGNED_SHORT, 0);
+  }
+  render();
+}
+
+// ===================== PARALLAX =====================
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  const heroBg = document.querySelector('.hero-bg');
+  if (heroBg) heroBg.style.transform = `translateY(${sy * 0.3}px)`;
+});
+
+// ===================== SMOOTH SCROLL =====================
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
